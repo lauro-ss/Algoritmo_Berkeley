@@ -14,14 +14,10 @@ public class PrimaryClock {
         Time hora = Time.valueOf("03:00:00");
         ArrayList<Long> horariosServidores = new ArrayList<Long>();
 
-        // Classe java para trabalhar com multicast ou broadcast
-        MulticastSocket mcs = new MulticastSocket(6000);// porta como parametro
-        // Endere�o de um grupo multicast
+        MulticastSocket mcs = new MulticastSocket(6000);
         InetAddress grp = InetAddress.getByName("239.0.0.1");
-        // ingressando em um grupo para receber mensagens enviadas para o mesmo
         mcs.joinGroup(grp);
 
-        // Recebe a quantidade de relógios secundários
         try {
             byte rec[] = new byte[256];
             DatagramPacket pkg = new DatagramPacket(rec, rec.length);
@@ -29,15 +25,12 @@ public class PrimaryClock {
             // Espera 5 segundos pros relógios secundários conectar
             mcs.setSoTimeout(5000);
             while (true) {
-                mcs.receive(pkg);// recebendo os dados enviados via multicast para o endere�o acima
+                mcs.receive(pkg);
                 if (pkg.getData().length > 0) {
                     secondarysServers++;
                 }
             }
         } catch (SocketTimeoutException te) {
-            // System.out.println("Acabou o tempo de respostas, número de servidores: " +
-            // secondarysServers);
-
             EnviarHora(hora, mcs);
 
             ReceberHoras(horariosServidores, mcs);

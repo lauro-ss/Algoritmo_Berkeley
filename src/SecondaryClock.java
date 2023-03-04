@@ -20,19 +20,20 @@ public class SecondaryClock extends Thread {
 
         try {
             byte[] b = "Conectando".getBytes();
-            // Definindo o endere�o de envio do pacote neste caso o endere�o de multicast
+
             InetAddress addr = InetAddress.getByName("239.0.0.1");
             DatagramPacket pkg = new DatagramPacket(b, b.length, addr, 6000);
             DatagramSocket ds = new DatagramSocket();
-            ds.send(pkg);// enviando pacote multicast
+            // Enviando flag para informar que está conectado
+            ds.send(pkg);
 
-            // Classe java para trabalhar com multicast ou broadcast
-            MulticastSocket mcs = new MulticastSocket(6001);// porta como parametro
-            // Endere�o de um grupo multicast
+            MulticastSocket mcs = new MulticastSocket(6001);
+
             InetAddress grp = InetAddress.getByName("239.0.0.1");
-            // ingressando em um grupo para receber mensagens enviadas para o mesmo
 
+            // Grupo que recebe as horas na porta 6001
             mcs.joinGroup(grp);
+            // Recebendo o horario do servidor primario
             mcs.receive(pkg);
 
             if (pkg.getData().length > 0) {
@@ -41,9 +42,11 @@ public class SecondaryClock extends Thread {
 
                 byte[] horaByte = Long.toString(hora.getTime() - timePrimaryServer.getTime()).getBytes();
                 pkg = new DatagramPacket(horaByte, horaByte.length, pkg.getAddress(), pkg.getPort());
+                // Enviando diferenca de hora
                 ds.send(pkg);
             }
 
+            // Recebendo novo horario
             mcs.receive(pkg);
             horaString = new String(pkg.getData(), 0, pkg.getLength());
             timePrimaryServer = Time.valueOf(horaString);
