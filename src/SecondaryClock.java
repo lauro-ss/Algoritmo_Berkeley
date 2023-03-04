@@ -15,10 +15,11 @@ public class SecondaryClock {
             ds.send(pkg);// enviando pacote multicast
 
             // Classe java para trabalhar com multicast ou broadcast
-            MulticastSocket mcs = new MulticastSocket(6000);// porta como parametro
+            MulticastSocket mcs = new MulticastSocket(6001);// porta como parametro
             // Endere�o de um grupo multicast
             InetAddress grp = InetAddress.getByName("239.0.0.1");
             // ingressando em um grupo para receber mensagens enviadas para o mesmo
+
             mcs.joinGroup(grp);
             while (true) {
                 mcs.receive(pkg);

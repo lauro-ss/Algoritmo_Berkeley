@@ -32,7 +32,7 @@ public class PrimaryClock {
             System.out.println("Acabou o tempo de respostas, número e servidores: " + secondarysServers);
             byte[] hora = "Hora".getBytes();
             DatagramPacket pkgHora = new DatagramPacket(hora, hora.length, InetAddress.getByName("239.0.0.1"),
-                    6000);
+                    6001);
             mcs.send(pkgHora);
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
