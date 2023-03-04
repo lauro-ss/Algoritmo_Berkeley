@@ -2,9 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -53,7 +51,7 @@ public class PrimaryClock {
 
             EnviarHora(hora, mcs);
 
-            System.out.println("Novo horário: " + hora.toString());
+            System.out.println("Novo horário servidor primário: " + hora.toString());
 
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
@@ -73,8 +71,8 @@ public class PrimaryClock {
         byte rec[] = new byte[256];
         DatagramPacket pkg = new DatagramPacket(rec, rec.length);
         try {
-            // Recebe o horario de todos os servidores
-            mcs.setSoTimeout(5000);
+            // Espera por 3 segundos a diferença de horario
+            mcs.setSoTimeout(3000);
             while (true) {
                 mcs.receive(pkg);// recebendo os dados enviados via multicast para o endere�o acima
                 if (pkg.getData().length > 0) {

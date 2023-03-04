@@ -2,13 +2,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.nio.ByteBuffer;
 import java.sql.Time;
 
-public class SecondaryClock {
-    public static void main(String[] args) throws Exception {
+public class SecondaryClock extends Thread {
 
-        Time hora = Time.valueOf("03:20:00");
+    private int id;
+    private Time hora;
+
+    public SecondaryClock(int id, Time hora) {
+        this.id = id;
+        this.hora = hora;
+    }
+
+    public void run() {
         Time timePrimaryServer;
         String horaString;
 
@@ -41,7 +47,7 @@ public class SecondaryClock {
             mcs.receive(pkg);
             horaString = new String(pkg.getData(), 0, pkg.getLength());
             timePrimaryServer = Time.valueOf(horaString);
-            System.out.println("Novo horário: " + timePrimaryServer.toString());
+            System.out.println("Novo horário servidor secundário: " + timePrimaryServer.toString());
 
         } catch (Exception e) {
             System.out.println("Nao foi possivel enviar a mensagem");
