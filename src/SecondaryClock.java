@@ -2,9 +2,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.ByteBuffer;
+import java.sql.Time;
 
 public class SecondaryClock {
     public static void main(String[] args) throws Exception {
+
+        Time hora = Time.valueOf("03:20:00");
 
         try {
             byte[] b = "Conectando".getBytes();
@@ -23,8 +27,14 @@ public class SecondaryClock {
             mcs.joinGroup(grp);
             while (true) {
                 mcs.receive(pkg);
-                String t = new String(pkg.getData(), 0, pkg.getLength());
-                System.out.println(t);
+                if (pkg.getData().length > 0) {
+                    String horaString = new String(pkg.getData(), 0, pkg.getLength());
+                    Time timePrimaryServer = Time.valueOf(horaString);
+
+                    byte[] horaByte = Long.toString(hora.getTime() - timePrimaryServer.getTime()).getBytes();
+                    pkg = new DatagramPacket(horaByte, horaByte.length, pkg.getAddress(), pkg.getPort());
+                    ds.send(pkg);
+                }
             }
         } catch (Exception e) {
             System.out.println("Nao foi possivel enviar a mensagem");
