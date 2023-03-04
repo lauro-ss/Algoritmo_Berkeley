@@ -12,7 +12,7 @@ public class PrimaryClock {
 
     public static void main(String[] args) throws Exception {
 
-        int secondarysServers = 0;
+        int secondarysServers = 1;
         Time hora = Time.valueOf("03:00:00");
         ArrayList<Long> horariosServidores = new ArrayList<Long>();
 
@@ -44,9 +44,16 @@ public class PrimaryClock {
 
             ReceberHoras(horariosServidores, mcs);
 
+            Long totalTime = (long) 0;
             for (Long time : horariosServidores) {
-                System.out.println(time);
+                totalTime += time;
             }
+
+            hora.setTime(hora.getTime() + (totalTime / secondarysServers));
+
+            EnviarHora(hora, mcs);
+
+            System.out.println("Novo horário: " + hora.toString());
 
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
