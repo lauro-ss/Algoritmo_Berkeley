@@ -24,8 +24,6 @@ public class SecondaryClock extends Thread {
             InetAddress addr = InetAddress.getByName("239.0.0.1");
             DatagramPacket pkg = new DatagramPacket(b, b.length, addr, 6000);
             DatagramSocket ds = new DatagramSocket();
-            // Enviando flag para informar que está conectado
-            ds.send(pkg);
 
             MulticastSocket mcs = new MulticastSocket(6001);
 
@@ -50,7 +48,7 @@ public class SecondaryClock extends Thread {
             mcs.receive(pkg);
             horaString = new String(pkg.getData(), 0, pkg.getLength());
             timePrimaryServer = Time.valueOf(horaString);
-            System.out.println("Novo horário servidor secundário: " + timePrimaryServer.toString());
+            System.out.println("Novo horário servidor secundário[" + id + "]: " + timePrimaryServer.toString());
 
         } catch (Exception e) {
             System.out.println("Nao foi possivel enviar a mensagem");
